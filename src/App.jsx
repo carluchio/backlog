@@ -9,77 +9,134 @@ import CompletedList from './components/CompletedList'
 export default function App() {
   const { user, loading: authLoading, signIn, signUp, signOut } = useAuth()
   const { tasks, completedTasks, loading: tasksLoading, addTask, completeTask, deleteTask, updateTask } = useTasks(user)
-  const [view, setView] = useState('backlog') // 'backlog' | 'done'
+  const [view, setView] = useState('backlog')
 
-  // Loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg)' }}>
+      <div style={{
+        minHeight: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--color-bg-app)',
+      }}>
         <div
-          className="w-6 h-6 rounded-full border-2 animate-spin"
-          style={{ borderColor: 'var(--color-border)', borderTopColor: 'var(--color-accent)' }}
+          className="animate-spin"
+          style={{
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            border: '2px solid var(--color-border-default)',
+            borderTopColor: 'var(--color-accent)',
+          }}
         />
       </div>
     )
   }
 
-  // Auth screen
-  if (!user) {
-    return <AuthForm onSignIn={signIn} onSignUp={signUp} />
-  }
+  if (!user) return <AuthForm onSignIn={signIn} onSignUp={signUp} />
 
-  // Main app
+  const tabs = [
+    { id: 'backlog', label: 'Active', count: tasks.length },
+    { id: 'done',    label: 'Done',   count: completedTasks.length },
+  ]
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'var(--color-bg)' }}>
+    <div style={{
+      minHeight: '100dvh',
+      display: 'flex',
+      flexDirection: 'column',
+      background: 'var(--color-bg-app)',
+    }}>
+
       {/* Header */}
-      <header className="flex items-center justify-between px-5 pt-5 pb-1">
-        <h1 className="text-xl font-bold tracking-tight" style={{ color: 'var(--color-text)' }}>
+      <header style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '20px 20px 8px',
+      }}>
+        <h1 style={{
+          fontSize: 'var(--text-lg)',
+          fontWeight: 700,
+          letterSpacing: '-0.03em',
+          color: 'var(--color-text-primary)',
+          lineHeight: 1,
+        }}>
           Backlog
         </h1>
         <button
           onClick={signOut}
-          className="text-xs cursor-pointer bg-transparent border-none"
-          style={{ color: 'var(--color-text-dim)' }}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'var(--color-text-dim)',
+            fontSize: 'var(--text-xs)',
+            fontWeight: 500,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            padding: '8px 0 8px 16px',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
         >
           Sign out
         </button>
       </header>
 
-      {/* Quick Add - only show on backlog view */}
       {view === 'backlog' && <QuickAdd onAdd={addTask} />}
 
       {/* Tab bar */}
-      <div className="flex px-5 gap-1 mb-1" style={{ marginTop: view === 'done' ? '8px' : '0' }}>
-        <button
-          onClick={() => setView('backlog')}
-          className="px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer border-none transition-colors"
-          style={{
-            background: view === 'backlog' ? 'var(--color-surface-hover)' : 'transparent',
-            color: view === 'backlog' ? 'var(--color-text)' : 'var(--color-text-dim)',
-          }}
-        >
-          Active
-          {tasks.length > 0 && (
-            <span className="ml-1.5 opacity-50">{tasks.length}</span>
-          )}
-        </button>
-        <button
-          onClick={() => setView('done')}
-          className="px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer border-none transition-colors"
-          style={{
-            background: view === 'done' ? 'var(--color-surface-hover)' : 'transparent',
-            color: view === 'done' ? 'var(--color-text)' : 'var(--color-text-dim)',
-          }}
-        >
-          Done
-          {completedTasks.length > 0 && (
-            <span className="ml-1.5 opacity-50">{completedTasks.length}</span>
-          )}
-        </button>
-      </div>
+      <nav style={{
+        display: 'flex',
+        padding: `${view === 'done' ? '8px' : '0'} 20px 0`,
+        borderBottom: '1px solid var(--color-border-subtle)',
+      }}>
+        {tabs.map(({ id, label, count }) => (
+          <button
+            key={id}
+            onClick={() => setView(id)}
+            style={{
+              padding: '10px 0 9px',
+              marginRight: '28px',
+              marginBottom: '-1px',
+              background: 'none',
+              border: 'none',
+              borderBottom: view === id
+                ? '2px solid var(--color-accent)'
+                : '2px solid transparent',
+              color: view === id
+                ? 'var(--color-text-primary)'
+                : 'var(--color-text-muted)',
+              fontSize: 'var(--text-sm)',
+              fontWeight: view === id ? 600 : 400,
+              cursor: 'pointer',
+              transition: `color var(--dur-fast), border-color var(--dur-fast)`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              lineHeight: 1,
+              minHeight: '44px',
+            }}
+          >
+            {label}
+            {count > 0 && (
+              <span style={{
+                fontFamily: "'Geist Mono', monospace",
+                fontSize: '10px',
+                color: view === id ? 'var(--color-text-muted)' : 'var(--color-text-dim)',
+              }}>
+                {count}
+              </span>
+            )}
+          </button>
+        ))}
+      </nav>
 
       {/* Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main style={{ flex: 1, overflowY: 'auto' }}>
         {view === 'backlog' ? (
           <BacklogList
             tasks={tasks}

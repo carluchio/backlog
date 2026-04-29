@@ -9,7 +9,6 @@ function groupByDate(tasks) {
   tasks.forEach(task => {
     const completed = new Date(task.completed_at)
     const completedDay = new Date(completed.getFullYear(), completed.getMonth(), completed.getDate())
-
     if (completedDay >= today) groups['Today'].push(task)
     else if (completedDay >= yesterday) groups['Yesterday'].push(task)
     else if (completedDay >= weekAgo) groups['This Week'].push(task)
@@ -22,9 +21,16 @@ function groupByDate(tasks) {
 export default function CompletedList({ tasks }) {
   if (tasks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-        <p className="text-sm" style={{ color: 'var(--color-text-dim)' }}>
-          No completed tasks yet
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '80px 24px',
+        textAlign: 'center',
+      }}>
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-dim)' }}>
+          Nothing completed yet
         </p>
       </div>
     )
@@ -33,23 +39,56 @@ export default function CompletedList({ tasks }) {
   const groups = groupByDate(tasks)
 
   return (
-    <div className="pb-24 pt-2">
+    <div style={{ paddingBottom: '96px', paddingTop: '8px' }}>
       {groups.map(([label, groupTasks]) => (
-        <div key={label} className="mb-4">
-          <p className="px-5 pb-2 pt-2 text-xs font-medium tracking-wide uppercase" style={{ color: 'var(--color-text-dim)' }}>
+        <div key={label} style={{ marginBottom: '8px' }}>
+          <p style={{
+            padding: '8px 20px 6px',
+            fontSize: 'var(--text-xs)',
+            fontWeight: 500,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-dim)',
+            fontFamily: "'Geist Mono', monospace",
+          }}>
             {label}
           </p>
           {groupTasks.map(task => (
             <div
               key={task.id}
-              className="mx-4 mb-1.5 px-4 py-3 rounded-xl"
               style={{
-                background: 'var(--color-surface)',
-                border: '1px solid var(--color-border)',
-                opacity: 0.6,
+                margin: '0 16px 6px',
+                padding: '12px 16px',
+                background: 'var(--color-bg-surface)',
+                border: '1px solid var(--color-border-subtle)',
+                borderRadius: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
               }}
             >
-              <p className="text-sm line-through" style={{ color: 'var(--color-text-muted)' }}>
+              <span style={{
+                flexShrink: 0,
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                background: 'var(--success-muted)',
+                border: '1px solid rgba(34, 197, 94, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '9px',
+                color: 'var(--color-success)',
+              }}>
+                ✓
+              </span>
+              <p style={{
+                fontSize: 'var(--text-sm)',
+                color: 'var(--color-text-dim)',
+                textDecoration: 'line-through',
+                textDecorationColor: 'var(--color-border-strong)',
+                lineHeight: 1.4,
+              }}>
                 {task.title}
               </p>
             </div>

@@ -1,18 +1,26 @@
-const colorMap = {
-  danger: { text: '#EF4444', bg: 'rgba(239,68,68,0.12)' },
-  warning: { text: '#F97316', bg: 'rgba(249,115,22,0.12)' },
-  caution: { text: '#EAB308', bg: 'rgba(234,179,8,0.12)' },
-  'text-dim': { text: '#6B7280', bg: 'rgba(107,114,128,0.08)' },
+const urgencyConfig = {
+  danger:     { color: 'var(--color-danger)',       bg: 'var(--danger-muted)' },
+  warning:    { color: 'var(--color-warning)',      bg: 'var(--warning-muted)' },
+  caution:    { color: 'var(--color-caution)',      bg: 'var(--caution-muted)' },
+  'text-dim': { color: 'var(--color-text-muted)',   bg: 'var(--neutral-muted)' },
 }
 
 export default function UrgencyTag({ urgency }) {
-  const colors = colorMap[urgency.color] || colorMap['text-dim']
+  const config = urgencyConfig[urgency.color] || urgencyConfig['text-dim']
 
   return (
-    <span
-      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-      style={{ color: colors.text, background: colors.bg }}
-    >
+    <span style={{
+      display: 'inline-block',
+      padding: '2px 7px',
+      borderRadius: '4px',
+      background: config.bg,
+      color: config.color,
+      fontFamily: "'Geist Mono', monospace",
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: 1.5,
+      verticalAlign: 'middle',
+    }}>
       {urgency.label}
     </span>
   )

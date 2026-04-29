@@ -3,10 +3,16 @@ import TaskCard from './TaskCard'
 export default function BacklogList({ tasks, loading, onComplete, onDelete, onUpdate }) {
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0' }}>
         <div
-          className="w-6 h-6 rounded-full border-2 animate-spin"
-          style={{ borderColor: 'var(--color-border)', borderTopColor: 'var(--color-accent)' }}
+          className="animate-spin"
+          style={{
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            border: '2px solid var(--color-border-default)',
+            borderTopColor: 'var(--color-accent)',
+          }}
         />
       </div>
     )
@@ -14,21 +20,57 @@ export default function BacklogList({ tasks, loading, onComplete, onDelete, onUp
 
   if (tasks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-        <div className="text-4xl mb-4 opacity-30">—</div>
-        <p className="text-sm font-medium" style={{ color: 'var(--color-text-muted)' }}>
-          Backlog is clear
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '80px 24px',
+        textAlign: 'center',
+      }}>
+        <div style={{
+          width: '36px',
+          height: '36px',
+          borderRadius: '50%',
+          border: '1.5px solid var(--color-border-default)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '16px',
+          color: 'var(--color-text-dim)',
+          fontSize: '14px',
+        }}>
+          ✓
+        </div>
+        <p style={{
+          fontSize: 'var(--text-base)',
+          fontWeight: 500,
+          color: 'var(--color-text-muted)',
+        }}>
+          All clear
         </p>
-        <p className="text-xs mt-1" style={{ color: 'var(--color-text-dim)' }}>
-          Add a task above to get started
+        <p style={{
+          marginTop: '4px',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--color-text-dim)',
+        }}>
+          Add a task above to begin
         </p>
       </div>
     )
   }
 
   return (
-    <div className="pb-24 pt-2">
-      <p className="px-5 pb-2 text-xs font-medium tracking-wide uppercase" style={{ color: 'var(--color-text-dim)' }}>
+    <div style={{ paddingBottom: '96px', paddingTop: '8px' }}>
+      <p style={{
+        padding: '0 20px 8px',
+        fontSize: 'var(--text-xs)',
+        fontWeight: 500,
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        color: 'var(--color-text-dim)',
+        fontFamily: "'Geist Mono', monospace",
+      }}>
         {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
       </p>
       {tasks.map(task => (
